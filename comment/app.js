@@ -21,7 +21,7 @@ app.post('/posts/:id/comments', async (req, res) => {
   const commentId = new Date().getTime().toString()
 
   const comments = commentByPostId[id] || []
-  comments.push({ id: commentId, content })
+  comments.push({ id: commentId, content, status: 'pending' })
   commentByPostId[id] = comments
   await axios.post('http://localhost:4005/event', {
     type: 'commentCreated',
@@ -29,6 +29,7 @@ app.post('/posts/:id/comments', async (req, res) => {
       id: commentId,
       content,
       postId: id,
+      status: 'pending',
     },
   })
 
@@ -36,10 +37,32 @@ app.post('/posts/:id/comments', async (req, res) => {
 })
 
 app.post('/event', (req, res) => {
-  console.log(`Received Event of type ${req.body.type}`)
+  console.log(
+    `Received Event of type ${req.body.type}  with body ${JSON.stringify(
+      req.body.data
+    )}`
+  )
+  const event = req.body
+  if (event.type === 'commentModerated') {
+    const postId = event.data.postId
+    const comments = commentByPostId[postId]
+    const newComments = comments.map((comment) => {
+      if (comment.id === event.data.id) {
+        // commnet.status = event.data.status
+        axios.post('http://localhost:4005/event', {
+          type: 'commentUpdated',
+          data: { ...comment, status: event.data.status, postId },
+        })
+
+        return { ...comment, status: event.data.status }
+      }
+      return comments
+    })
+    commentByPostId[postId] = newComments
+  }
   res.send(`Received Event of type ${req.body.type}`)
 })
 
 app.listen(4001, () => {
-  console.log('started listening on port 4001')
+  console.log('comment service started  on port 4001')
 })

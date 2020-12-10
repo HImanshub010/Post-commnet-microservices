@@ -11,9 +11,15 @@ app.use(cors())
 
 app.post('/event', (req, res) => {
   const event = req.body
+  console.log(
+    `Received Event of type ${req.body.type}  with body ${JSON.stringify(
+      req.body.data
+    )}`
+  )
   axios.post('http://localhost:4000/event', event)
   axios.post('http://localhost:4001/event', event)
   axios.post('http://localhost:4002/event', event)
+  axios.post('http://localhost:4003/event', event)
   res.send('Successfully emittd events to all services')
   console.log('Successfully emittd events to all services', event.type)
 })

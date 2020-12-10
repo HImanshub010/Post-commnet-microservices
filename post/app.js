@@ -32,10 +32,15 @@ app.post('/post', async (req, res) => {
 })
 
 app.post('/event', (req, res) => {
+  console.log(
+    `Received Event of type ${req.body.type}  with body ${JSON.stringify(
+      req.body.data
+    )}`
+  )
   console.log(`Received Event of type ${req.body.type}`)
   res.send(`Received Event of type ${req.body.type}`)
 })
 
 app.listen(4000, () => {
-  console.log('started listening on port 4000')
+  console.log('started Post service on port 4000')
 })
