@@ -16,10 +16,10 @@ app.post('/event', (req, res) => {
       req.body.data
     )}`
   )
-  axios.post('http://localhost:4000/event', event)
-  axios.post('http://localhost:4001/event', event)
-  axios.post('http://localhost:4002/event', event)
-  axios.post('http://localhost:4003/event', event)
+  axios.post('http://post-cluster-ip-srv:4000/event', event)
+  axios.post('http://comment-srv:4001/event', event)
+  axios.post('http://query-srv:4002/event', event)
+  axios.post('http://moderation-srv:4003/event', event)
   res.send('Successfully emittd events to all services')
   console.log('Successfully emittd events to all services', event.type)
 })
