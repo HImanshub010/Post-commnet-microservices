@@ -15,7 +15,7 @@ app.get('/posts', (req, res) => {
   return res.send(posts)
 })
 
-app.post('/post', async (req, res) => {
+app.post('/post/create', async (req, res) => {
   const title = req.body.title
   const id = new Date().getTime().toString()
   console.log(typeof id)
